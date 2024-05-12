@@ -38,7 +38,8 @@
     text-align: right;
 }
 
-.posts {
+.posts,
+.user-posts {
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -176,7 +177,7 @@
     text-align: center;
 }
 
-.file-upload-image-conrainer {
+.file-upload-image-container {
     display: flex;
     align-items: center;
 }

@@ -14,7 +14,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
             <div class="form-inputs">
                 <div class="upload-image-container">
                     <div class="upload=image">
-                        <div class="file-upload-image-conrainer">
+                        <div class="file-upload-image-container">
                             <img class="file-upload-image" />
                             <button class="file-upload-remove-button button">
                                 Заменить фото

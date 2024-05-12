@@ -1,21 +1,12 @@
-import { USER_POSTS_PAGE } from '../routes.js'
 import { renderHeaderComponent } from './header-component.js'
-import { posts, goToPage } from '../index.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
-export function renderPostsPageComponent({ appEl }) {
-    // TODO: реализовать рендер постов из api
-    console.log('Актуальный список постов:', posts)
-
-    /**
-     * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-     * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-     */
+export function renderUserPostsPageComponent({ appEl, posts }) {
     const appHtml = `
     <div class="page-container">
     <div class="header-container"></div>
-    <ul class="posts">
+    <ul class="user-posts">
         ${posts
             .map(post => {
                 const activeLike = post.isLiked
@@ -28,14 +19,14 @@ export function renderPostsPageComponent({ appEl }) {
                 )
 
                 return `
+        <div class="posts-user-header" data-user-id="${post.user.id}">
+            <img
+                src="${post.user.imageUrl}"
+                class="posts-user-header__user-image"
+            />
+            <p class="posts-user-header__user-name">${post.user.name}</p>
+        </div>
         <li class="post">
-            <div class="post-header" data-user-id="${post.user.id}">
-                <img
-                    src="${post.user.imageUrl}"
-                    class="post-header__user-image"
-                />
-                <p class="post-header__user-name">${post.user.name}</p>
-            </div>
             <div class="post-image-container">
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
@@ -63,12 +54,4 @@ export function renderPostsPageComponent({ appEl }) {
     renderHeaderComponent({
         element: document.querySelector('.header-container'),
     })
-
-    for (let userEl of document.querySelectorAll('.post-header')) {
-        userEl.addEventListener('click', () => {
-            goToPage(USER_POSTS_PAGE, {
-                userId: userEl.dataset.userId,
-            })
-        })
-    }
 }
