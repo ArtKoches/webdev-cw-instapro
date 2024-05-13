@@ -1,18 +1,13 @@
 import { USER_POSTS_PAGE } from '../routes.js'
+import { deletePost } from '../api.js'
 import { renderHeaderComponent } from './header-component.js'
-import { posts, goToPage } from '../index.js'
+import { getToken, posts, goToPage } from '../index.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
 export function renderPostsPageComponent({ appEl }) {
-    // TODO: реализовать рендер постов из api
-    console.log('Актуальный список постов:', posts)
-
-    /**
-     * TODO: чтобы отформатировать дату создания поста в виде "19 минут назад"
-     * можно использовать https://date-fns.org/v2.29.3/docs/formatDistanceToNow
-     */
-    const appHtml = `
+    const render = () => {
+        const appHtml = `
     <div class="page-container">
     <div class="header-container"></div>
     <ul class="posts">
@@ -40,6 +35,7 @@ export function renderPostsPageComponent({ appEl }) {
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
             <div class="post-likes">
+                <button data-post-id="${post.id}" class="delete-button" ></button>
                 <button data-post-id="${post.id}" class="like-button">
                     <img src="./assets/images/${activeLike}" />
                 </button>
@@ -58,17 +54,30 @@ export function renderPostsPageComponent({ appEl }) {
     </ul>
     </div>`
 
-    appEl.innerHTML = appHtml
+        appEl.innerHTML = appHtml
 
-    renderHeaderComponent({
-        element: document.querySelector('.header-container'),
-    })
+        renderHeaderComponent({
+            element: document.querySelector('.header-container'),
+        })
 
-    for (let userEl of document.querySelectorAll('.post-header')) {
-        userEl.addEventListener('click', () => {
-            goToPage(USER_POSTS_PAGE, {
-                userId: userEl.dataset.userId,
+        for (let userEl of document.querySelectorAll('.post-header')) {
+            userEl.addEventListener('click', () => {
+                goToPage(USER_POSTS_PAGE, {
+                    userId: userEl.dataset.userId,
+                })
+            })
+        }
+
+        //Удаление поста по id
+        document.querySelectorAll('.delete-button').forEach(delButton => {
+            delButton.addEventListener('click', () => {
+                deletePost({
+                    token: getToken(),
+                    postId: delButton.dataset.postId,
+                })
             })
         })
     }
+
+    render()
 }

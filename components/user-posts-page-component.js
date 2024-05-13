@@ -1,9 +1,12 @@
+import { deletePost } from '../api.js'
+import { getToken } from '../index.js'
 import { renderHeaderComponent } from './header-component.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
 export function renderUserPostsPageComponent({ appEl, posts }) {
-    const appHtml = `
+    const render = () => {
+        const appHtml = `
     <div class="page-container">
     <div class="header-container"></div>
     <ul class="user-posts">
@@ -31,6 +34,7 @@ export function renderUserPostsPageComponent({ appEl, posts }) {
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
             <div class="post-likes">
+                <button data-post-id="${post.id}" class="delete-button" ></button>
                 <button data-post-id="${post.id}" class="like-button">
                     <img src="./assets/images/${activeLike}" />
                 </button>
@@ -49,9 +53,22 @@ export function renderUserPostsPageComponent({ appEl, posts }) {
     </ul>
     </div>`
 
-    appEl.innerHTML = appHtml
+        appEl.innerHTML = appHtml
 
-    renderHeaderComponent({
-        element: document.querySelector('.header-container'),
-    })
+        renderHeaderComponent({
+            element: document.querySelector('.header-container'),
+        })
+
+        //Удаление поста по id
+        document.querySelectorAll('.delete-button').forEach(delButton => {
+            delButton.addEventListener('click', () => {
+                deletePost({
+                    token: getToken(),
+                    postId: delButton.dataset.postId,
+                })
+            })
+        })
+    }
+
+    render()
 }

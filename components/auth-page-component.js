@@ -49,8 +49,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                
               </div>
           </div>
-      </div>    
-`
+      </div>`
 
         appEl.innerHTML = appHtml
 
@@ -113,10 +112,12 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                     const name = document.getElementById('name-input').value
                     const password =
                         document.getElementById('password-input').value
+
                     if (!name) {
                         alert('Введите имя')
                         return
                     }
+                    
                     if (!login) {
                         alert('Введите логин')
                         return

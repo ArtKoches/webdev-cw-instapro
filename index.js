@@ -23,7 +23,7 @@ export let user = getUserFromLocalStorage()
 export let page = null
 export let posts = []
 
-const getToken = () => {
+export const getToken = () => {
     const token = user ? `Bearer ${user.token}` : undefined
     return token
 }
@@ -73,7 +73,6 @@ export const goToPage = (newPage, data) => {
             page = LOADING_PAGE
             renderApp()
 
-            // TODO: реализовать получение постов юзера из API
             return getUserPosts({
                 token: getToken(),
                 userId: data.userId,
@@ -82,7 +81,6 @@ export const goToPage = (newPage, data) => {
                     page = USER_POSTS_PAGE
                     posts = newPosts
                     renderApp()
-                    console.log('Открываю страницу пользователя: ', data.userId)
                 })
                 .catch(error => {
                     console.error(error)
@@ -126,9 +124,7 @@ const renderApp = () => {
         return renderAddPostPageComponent({
             appEl,
             onAddPostClick({ description, imageUrl }) {
-                // TODO: реализовать добавление поста в API
                 addPost({ token: getToken(), description, imageUrl })
-                console.log('Добавляю пост...', { description, imageUrl })
                 goToPage(POSTS_PAGE)
             },
         })
@@ -141,13 +137,10 @@ const renderApp = () => {
     }
 
     if (page === USER_POSTS_PAGE) {
-        // TODO: реализовать страницу фотографию пользвателя
         return renderUserPostsPageComponent({
             appEl,
             posts,
         })
-        // appEl.innerHTML = 'Здесь будет страница фотографий пользователя'
-        // return
     }
 }
 

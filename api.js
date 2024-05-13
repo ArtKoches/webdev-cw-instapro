@@ -15,7 +15,6 @@ export function getPosts({ token }) {
             if (response.status === 401) {
                 throw new Error('Нет авторизации')
             }
-
             return response.json()
         })
         .then(data => {
@@ -34,7 +33,6 @@ export function getUserPosts({ token, userId }) {
             if (response.status === 401) {
                 throw new Error('Нет авторизации')
             }
-
             return response.json()
         })
         .then(data => {
@@ -50,6 +48,24 @@ export function addPost({ token, description, imageUrl }) {
         },
         body: JSON.stringify({ description, imageUrl }),
     }).then(response => {
+        if (response.status === 401) {
+            throw new Error('Нет авторизации')
+        }
+        return response.json()
+    })
+}
+
+export function deletePost({ token, postId }) {
+    return fetch(`${postsHost}/${postId}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: token,
+        },
+    }).then(response => {
+        if (response.status === 401) {
+            alert('Удалить пост, могут только авторизованные пользователи')
+            throw new Error('Нет авторизации')
+        }
         return response.json()
     })
 }

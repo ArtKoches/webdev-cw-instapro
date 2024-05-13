@@ -1,13 +1,12 @@
 import { renderHeaderComponent } from './header-component'
 import { renderUploadImageComponent } from './upload-image-component'
 
-renderHeaderComponent
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     let imageUrl = ''
 
     const render = () => {
-        // TODO: Реализовать страницу добавления поста
-        const appHtml = `<div class="page-container">
+        const appHtml = `
+        <div class="page-container">
         <div class="header-container"></div>
         <div class="form">
             <h3 class="form-title">Добавить пост</h3>
@@ -33,7 +32,7 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
                 <button class="button" id="add-button">Добавить</button>
             </div>
         </div>
-    </div>`
+        </div>`
 
         appEl.innerHTML = appHtml
 
@@ -57,8 +56,13 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         document.getElementById('add-button').addEventListener('click', () => {
             const descPhoto = document.getElementById('desc-photo').value
 
-            if (!imageUrl || !descPhoto) {
-                alert('Добавьте фото и комментарии к посту')
+            if (!imageUrl) {
+                alert('Не выбрана фотография')
+                return
+            }
+
+            if (!descPhoto) {
+                alert('Напишите комментарий к посту')
                 return
             }
 
