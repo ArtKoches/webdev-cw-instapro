@@ -55,7 +55,9 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         }
 
         document.getElementById('add-button').addEventListener('click', () => {
-            const addPostDesc = document.getElementById('desc-photo').value
+            const addPostDesc = document
+                .getElementById('desc-photo')
+                .value.trim()
 
             if (!imageUrl) {
                 alert('Не выбрана фотография')
