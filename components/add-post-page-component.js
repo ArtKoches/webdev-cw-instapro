@@ -1,5 +1,6 @@
 import { renderHeaderComponent } from './header-component'
 import { renderUploadImageComponent } from './upload-image-component'
+import sanitizeHtml from 'sanitize-html'
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     let imageUrl = ''
@@ -54,20 +55,20 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
         }
 
         document.getElementById('add-button').addEventListener('click', () => {
-            const descPhoto = document.getElementById('desc-photo').value
+            const addPostDesc = document.getElementById('desc-photo').value
 
             if (!imageUrl) {
                 alert('Не выбрана фотография')
                 return
             }
 
-            if (!descPhoto) {
+            if (!addPostDesc) {
                 alert('Напишите комментарий к посту')
                 return
             }
 
             onAddPostClick({
-                description: descPhoto,
+                description: sanitizeHtml(addPostDesc, { allowedTags: [] }),
                 imageUrl: imageUrl,
             })
         })

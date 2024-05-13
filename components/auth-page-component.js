@@ -1,6 +1,7 @@
 import { loginUser, registerUser } from '../api.js'
 import { renderHeaderComponent } from './header-component.js'
 import { renderUploadImageComponent } from './upload-image-component.js'
+import { capitalize } from 'lodash'
 
 export function renderAuthPageComponent({ appEl, setUser }) {
     let isLoginMode = true
@@ -117,7 +118,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                         alert('Введите имя')
                         return
                     }
-                    
+
                     if (!login) {
                         alert('Введите логин')
                         return
@@ -136,7 +137,7 @@ export function renderAuthPageComponent({ appEl, setUser }) {
                     registerUser({
                         login: login,
                         password: password,
-                        name: name,
+                        name: capitalize(name),
                         imageUrl,
                     })
                         .then(user => {

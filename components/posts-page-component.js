@@ -1,11 +1,10 @@
 import { USER_POSTS_PAGE } from '../routes.js'
-import { deletePost } from '../api.js'
 import { renderHeaderComponent } from './header-component.js'
-import { getToken, posts, goToPage } from '../index.js'
+import { posts, goToPage } from '../index.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
-export function renderPostsPageComponent({ appEl }) {
+export function renderPostsPageComponent({ appEl, onDeletePostClick }) {
     const render = () => {
         const appHtml = `
     <div class="page-container">
@@ -71,10 +70,7 @@ export function renderPostsPageComponent({ appEl }) {
         //Удаление поста по id
         document.querySelectorAll('.delete-button').forEach(delButton => {
             delButton.addEventListener('click', () => {
-                deletePost({
-                    token: getToken(),
-                    postId: delButton.dataset.postId,
-                })
+                onDeletePostClick({ postId: delButton.dataset.postId })
             })
         })
     }

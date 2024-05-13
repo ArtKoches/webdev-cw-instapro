@@ -12,7 +12,7 @@ import {
     saveUserToLocalStorage,
 } from './helpers.js'
 
-import { getPosts, getUserPosts, addPost } from './api.js'
+import { getPosts, getUserPosts, addPost, deletePost } from './api.js'
 import { renderAddPostPageComponent } from './components/add-post-page-component.js'
 import { renderAuthPageComponent } from './components/auth-page-component.js'
 import { renderPostsPageComponent } from './components/posts-page-component.js'
@@ -23,9 +23,17 @@ export let user = getUserFromLocalStorage()
 export let page = null
 export let posts = []
 
-export const getToken = () => {
+const getToken = () => {
     const token = user ? `Bearer ${user.token}` : undefined
     return token
+}
+
+/**
+ * Обновляет список постов
+ * после успешного запроса в API
+ */
+const updatePosts = newPosts => {
+    posts = newPosts
 }
 
 export const logout = () => {
@@ -125,6 +133,12 @@ const renderApp = () => {
             appEl,
             onAddPostClick({ description, imageUrl }) {
                 addPost({ token: getToken(), description, imageUrl })
+                    .then(getPosts)
+                    .then(newPosts => {
+                        updatePosts(newPosts)
+                        renderApp()
+                    })
+
                 goToPage(POSTS_PAGE)
             },
         })
@@ -133,6 +147,17 @@ const renderApp = () => {
     if (page === POSTS_PAGE) {
         return renderPostsPageComponent({
             appEl,
+            onDeletePostClick({ postId }) {
+                deletePost({
+                    token: getToken(),
+                    postId,
+                })
+                    .then(getPosts)
+                    .then(newPosts => {
+                        updatePosts(newPosts)
+                        renderApp()
+                    })
+            },
         })
     }
 
@@ -140,6 +165,17 @@ const renderApp = () => {
         return renderUserPostsPageComponent({
             appEl,
             posts,
+            onDeletePostClick({ postId }) {
+                deletePost({
+                    token: getToken(),
+                    postId,
+                })
+                    .then(getPosts)
+                    .then(newPosts => {
+                        updatePosts(newPosts)
+                        renderApp()
+                    })
+            },
         })
     }
 }
