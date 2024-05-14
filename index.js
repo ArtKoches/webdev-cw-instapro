@@ -12,7 +12,14 @@ import {
     saveUserToLocalStorage,
 } from './helpers.js'
 
-import { getPosts, getUserPosts, addPost, deletePost } from './api.js'
+import {
+    getPosts,
+    getUserPosts,
+    addPost,
+    deletePost,
+    getLikePost,
+} from './api.js'
+
 import { renderAddPostPageComponent } from './components/add-post-page-component.js'
 import { renderAuthPageComponent } from './components/auth-page-component.js'
 import { renderPostsPageComponent } from './components/posts-page-component.js'
@@ -147,11 +154,21 @@ const renderApp = () => {
     if (page === POSTS_PAGE) {
         return renderPostsPageComponent({
             appEl,
-            onDeletePostClick({ postId }) {
+
+            deletePostClick({ postId }) {
                 deletePost({
                     token: getToken(),
                     postId,
                 })
+                    .then(getPosts)
+                    .then(newPosts => {
+                        updatePosts(newPosts)
+                        renderApp()
+                    })
+            },
+
+            likePostClick({ postId, isLiked }) {
+                getLikePost({ token: getToken(), postId, isLiked })
                     .then(getPosts)
                     .then(newPosts => {
                         updatePosts(newPosts)
@@ -164,8 +181,10 @@ const renderApp = () => {
     if (page === USER_POSTS_PAGE) {
         return renderUserPostsPageComponent({
             appEl,
+
             posts,
-            onDeletePostClick({ postId }) {
+
+            deletePostClick({ postId }) {
                 deletePost({
                     token: getToken(),
                     postId,

@@ -5,7 +5,7 @@ import { ru } from 'date-fns/locale'
 export function renderUserPostsPageComponent({
     appEl,
     posts,
-    onDeletePostClick,
+    deletePostClick,
 }) {
     const render = () => {
         const appHtml = `
@@ -64,7 +64,7 @@ export function renderUserPostsPageComponent({
         //Удаление поста по id
         document.querySelectorAll('.delete-button').forEach(delButton => {
             delButton.addEventListener('click', () => {
-                onDeletePostClick({ postId: delButton.dataset.postId })
+                deletePostClick({ postId: delButton.dataset.postId })
             })
         })
     }

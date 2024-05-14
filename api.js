@@ -56,6 +56,30 @@ export function addPost({ token, description, imageUrl }) {
     })
 }
 
+export function getLikePost({ token, postId, isLiked }) {
+    const likeHost = isLiked === 'true' ? 'dislike' : 'like'
+
+    return fetch(`${postsHost}/${postId}/${likeHost}`, {
+        method: 'POST',
+        headers: {
+            Authorization: token,
+        },
+    })
+        .then(response => {
+            if (response.status === 401) {
+                alert(
+                    'Поставить лайк, могут только авторизованные пользователи',
+                )
+                throw new Error('Нет авторизации')
+            }
+            return response.json()
+        })
+        .then(data => {
+            return data.post
+        })
+        .catch(error => console.error(error))
+}
+
 export function deletePost({ token, postId }) {
     return fetch(`${postsHost}/${postId}`, {
         method: 'DELETE',
