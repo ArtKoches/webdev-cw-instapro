@@ -20,16 +20,16 @@ export function renderPostsPageComponent({
                     ? `like-active.svg`
                     : `like-not-active.svg`
 
+                const togglePostLikesText = !post.likes.length
+                    ? `<strong>${post.likes.length}</strong>`
+                    : `<strong>${post.user.name}</strong>`
+
+                const andStillPostLikesText = `<strong>${post.user.name}</strong> и <strong>еще ${post.likes.length - 1}</strong>`
+
                 const postCreateFormatDate = formatDistanceToNow(
                     new Date(post.createdAt),
                     { addSuffix: true, locale: ru },
                 )
-
-                const toggleLikeText = !post.likes.length
-                    ? post.likes.length
-                    : post.user.name
-
-                // const secondText = `${post.user.name} и <strong>еще ${post.likes.length}</strong>`
 
                 return `
         <li class="post">
@@ -49,7 +49,7 @@ export function renderPostsPageComponent({
                     <img src="./assets/images/${toggleLikeActiveImg}" />
                 </button>
                 <p class="post-likes-text">
-                Нравится: <strong>${toggleLikeText}</strong>
+                Нравится: ${post.likes.length > 1 ? andStillPostLikesText : togglePostLikesText}
                 </p>
             </div>
             <p class="post-text">
