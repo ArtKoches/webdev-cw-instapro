@@ -169,7 +169,7 @@ const renderApp = () => {
 
             likePostClick({ postId, isLiked }) {
                 getLikePost({ token: getToken(), postId, isLiked })
-                    .then(getPosts)
+                    .then(() => getPosts({ token: getToken() }))
                     .then(newPosts => {
                         updatePosts(newPosts)
                         renderApp()
