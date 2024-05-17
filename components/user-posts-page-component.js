@@ -6,6 +6,7 @@ export function renderUserPostsPageComponent({
     appEl,
     posts,
     deletePostClick,
+    likePostClick,
 }) {
     const render = () => {
         const appHtml = `
@@ -14,11 +15,17 @@ export function renderUserPostsPageComponent({
     <ul class="user-posts">
         ${posts
             .map(post => {
-                const activeLike = post.isLiked
+                const toggleLikeActiveImg = post.isLiked
                     ? `like-active.svg`
                     : `like-not-active.svg`
 
-                const postCreateDate = formatDistanceToNow(
+                const togglePostLikeText = !post.likes.length
+                    ? `<strong>${post.likes.length}</strong>`
+                    : `<strong>${post.user.name}</strong>`
+
+                const andMorePostLikeText = `<strong>${post.user.name}</strong> и <strong>еще ${post.likes.length - 1}</strong>`
+
+                const postCreateFormatDate = formatDistanceToNow(
                     new Date(post.createdAt),
                     { addSuffix: true, locale: ru },
                 )
@@ -36,19 +43,19 @@ export function renderUserPostsPageComponent({
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
             <div class="post-likes">
-                <button data-post-id="${post.id}" class="delete-button" ></button>
-                <button data-post-id="${post.id}" class="like-button">
-                    <img src="./assets/images/${activeLike}" />
-                </button>
+            <button class="delete-button" data-post-id="${post.id}"></button>
+            <button class="like-button" data-is-liked="${post.isLiked}" data-post-id="${post.id}">
+                <img src="./assets/images/${toggleLikeActiveImg}" />
+            </button>
                 <p class="post-likes-text">
-                    Нравится: <strong>${post.likes.length}</strong>
+                Нравится: ${post.likes.length > 1 ? andMorePostLikeText : togglePostLikeText}
                 </p>
             </div>
             <p class="post-text">
                 <span class="user-name">${post.user.name}</span>
                 ${post.description}
             </p>
-            <p class="post-date">${postCreateDate}</p>
+            <p class="post-date">${postCreateFormatDate}</p>
         </li>`
             })
             .join('')}
@@ -61,10 +68,20 @@ export function renderUserPostsPageComponent({
             element: document.querySelector('.header-container'),
         })
 
-        //Удаление поста по id
-        document.querySelectorAll('.delete-button').forEach(delButton => {
-            delButton.addEventListener('click', () => {
-                deletePostClick({ postId: delButton.dataset.postId })
+        //Удалить пост
+        document.querySelectorAll('.delete-button').forEach(deleteButton => {
+            deleteButton.addEventListener('click', () => {
+                deletePostClick({ postId: deleteButton.dataset.postId })
+            })
+        })
+
+        //Поставить лайк
+        document.querySelectorAll('.like-button').forEach(likeButton => {
+            likeButton.addEventListener('click', () => {
+                likePostClick({
+                    postId: likeButton.dataset.postId,
+                    isLiked: likeButton.dataset.isLiked,
+                })
             })
         })
     }

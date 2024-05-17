@@ -57,9 +57,13 @@ export function addPost({ token, description, imageUrl }) {
 }
 
 export function getLikePost({ token, postId, isLiked }) {
-    const likeHost = isLiked === 'true' ? 'dislike' : 'like'
+    if (!token) {
+        return alert('Поставить лайк, могут только авторизованные пользователи')
+    }
 
-    return fetch(`${postsHost}/${postId}/${likeHost}`, {
+    const toggleLikeHost = isLiked === 'true' ? 'dislike' : 'like'
+
+    return fetch(`${postsHost}/${postId}/${toggleLikeHost}`, {
         method: 'POST',
         headers: {
             Authorization: token,
@@ -67,9 +71,6 @@ export function getLikePost({ token, postId, isLiked }) {
     })
         .then(response => {
             if (response.status === 401) {
-                alert(
-                    'Поставить лайк, могут только авторизованные пользователи',
-                )
                 throw new Error('Нет авторизации')
             }
             return response.json()
@@ -81,6 +82,10 @@ export function getLikePost({ token, postId, isLiked }) {
 }
 
 export function deletePost({ token, postId }) {
+    if (!token) {
+        return alert('Удалить пост, могут только авторизованные пользователи')
+    }
+
     return fetch(`${postsHost}/${postId}`, {
         method: 'DELETE',
         headers: {
@@ -88,7 +93,6 @@ export function deletePost({ token, postId }) {
         },
     }).then(response => {
         if (response.status === 401) {
-            alert('Удалить пост, могут только авторизованные пользователи')
             throw new Error('Нет авторизации')
         }
         return response.json()

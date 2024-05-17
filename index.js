@@ -1,3 +1,9 @@
+import { renderAddPostPageComponent } from './components/add-post-page-component.js'
+import { renderAuthPageComponent } from './components/auth-page-component.js'
+import { renderPostsPageComponent } from './components/posts-page-component.js'
+import { renderLoadingPageComponent } from './components/loading-page-component.js'
+import { renderUserPostsPageComponent } from './components/user-posts-page-component.js'
+
 import {
     ADD_POSTS_PAGE,
     AUTH_PAGE,
@@ -19,12 +25,6 @@ import {
     deletePost,
     getLikePost,
 } from './api.js'
-
-import { renderAddPostPageComponent } from './components/add-post-page-component.js'
-import { renderAuthPageComponent } from './components/auth-page-component.js'
-import { renderPostsPageComponent } from './components/posts-page-component.js'
-import { renderLoadingPageComponent } from './components/loading-page-component.js'
-import { renderUserPostsPageComponent } from './components/user-posts-page-component.js'
 
 export let user = getUserFromLocalStorage()
 export let page = null
@@ -154,6 +154,7 @@ const renderApp = () => {
     if (page === POSTS_PAGE) {
         return renderPostsPageComponent({
             appEl,
+            posts,
 
             deletePostClick({ postId }) {
                 deletePost({
@@ -181,7 +182,6 @@ const renderApp = () => {
     if (page === USER_POSTS_PAGE) {
         return renderUserPostsPageComponent({
             appEl,
-
             posts,
 
             deletePostClick({ postId }) {
@@ -190,6 +190,15 @@ const renderApp = () => {
                     postId,
                 })
                     .then(getPosts)
+                    .then(newPosts => {
+                        updatePosts(newPosts)
+                        renderApp()
+                    })
+            },
+
+            likePostClick({ postId, isLiked }) {
+                getLikePost({ token: getToken(), postId, isLiked })
+                    .then(() => getPosts({ token: getToken() }))
                     .then(newPosts => {
                         updatePosts(newPosts)
                         renderApp()
