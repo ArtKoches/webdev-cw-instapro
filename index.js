@@ -140,7 +140,6 @@ const renderApp = () => {
             appEl,
             onAddPostClick({ description, imageUrl }) {
                 addPost({ token: getToken(), description, imageUrl })
-                    .then(getPosts)
                     .then(newPosts => {
                         updatePosts(newPosts)
                         renderApp()
