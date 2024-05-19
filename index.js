@@ -184,21 +184,31 @@ const renderApp = () => {
             appEl,
             posts,
 
-            deletePostClick({ postId }) {
+            deletePostClick({ postId, userId }) {
                 deletePost({
                     token: getToken(),
                     postId,
                 })
-                    .then(getPosts)
+                    .then(() =>
+                        getUserPosts({
+                            token: getToken(),
+                            userId: userId,
+                        }),
+                    )
                     .then(newPosts => {
                         updatePosts(newPosts)
                         renderApp()
                     })
             },
 
-            likePostClick({ postId, isLiked }) {
+            likePostClick({ postId, isLiked, userId }) {
                 getLikePost({ token: getToken(), postId, isLiked })
-                    .then(() => getPosts({ token: getToken() }))
+                    .then(() =>
+                        getUserPosts({
+                            token: getToken(),
+                            userId: userId,
+                        }),
+                    )
                     .then(newPosts => {
                         updatePosts(newPosts)
                         renderApp()

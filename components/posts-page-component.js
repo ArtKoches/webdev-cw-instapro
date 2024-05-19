@@ -1,6 +1,6 @@
 import { USER_POSTS_PAGE } from '../routes.js'
 import { renderHeaderComponent } from './header-component.js'
-import { goToPage } from '../index.js'
+import { goToPage, user } from '../index.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
@@ -23,9 +23,9 @@ export function renderPostsPageComponent({
 
                 const togglePostLikeText = !post.likes.length
                     ? `<strong>${post.likes.length}</strong>`
-                    : `<strong>${post.user.name}</strong>`
+                    : `<strong>${post.likes[0].name}</strong>`
 
-                const andMorePostLikeText = `<strong>${post.user.name}</strong> и <strong>еще ${post.likes.length - 1}</strong>`
+                const andMorePostLikeText = `<strong>${post.likes[0]?.name}</strong> и <strong>еще ${post.likes.length - 1}</strong>`
 
                 const postCreateFormatDate = formatDistanceToNow(
                     new Date(post.createdAt),
@@ -45,7 +45,7 @@ export function renderPostsPageComponent({
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
             <div class="post-likes">
-                <button class="delete-button" data-post-id="${post.id}"></button>
+                <button class="${user?._id === post.user.id ? `delete-button` : `-hide-del-btn`}" data-post-id="${post.id}"></button>
                 <button class="like-button" data-is-liked="${post.isLiked}" data-post-id="${post.id}">
                     <img src="./assets/images/${toggleLikeActiveImg}" />
                 </button>

@@ -1,6 +1,7 @@
 import { renderHeaderComponent } from './header-component.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { user } from '../index.js'
 
 export function renderUserPostsPageComponent({
     appEl,
@@ -21,9 +22,9 @@ export function renderUserPostsPageComponent({
 
                 const togglePostLikeText = !post.likes.length
                     ? `<strong>${post.likes.length}</strong>`
-                    : `<strong>${post.user.name}</strong>`
+                    : `<strong>${post.likes[0].name}</strong>`
 
-                const andMorePostLikeText = `<strong>${post.user.name}</strong> и <strong>еще ${post.likes.length - 1}</strong>`
+                const andMorePostLikeText = `<strong>${post.likes[0]?.name}</strong> и <strong>еще ${post.likes.length - 1}</strong>`
 
                 const postCreateFormatDate = formatDistanceToNow(
                     new Date(post.createdAt),
@@ -43,8 +44,8 @@ export function renderUserPostsPageComponent({
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
             <div class="post-likes">
-            <button class="delete-button" data-post-id="${post.id}"></button>
-            <button class="like-button" data-is-liked="${post.isLiked}" data-post-id="${post.id}">
+            <button class="${user?._id === post.user.id ? `delete-button` : `-hide-del-btn`}" data-post-id="${post.id}" data-user-id="${post.user.id}"></button>
+            <button class="like-button" data-is-liked="${post.isLiked}" data-post-id="${post.id}" data-user-id="${post.user.id}">
                 <img src="./assets/images/${toggleLikeActiveImg}" />
             </button>
                 <p class="post-likes-text">
@@ -71,7 +72,10 @@ export function renderUserPostsPageComponent({
         //Удалить пост
         document.querySelectorAll('.delete-button').forEach(deleteButton => {
             deleteButton.addEventListener('click', () => {
-                deletePostClick({ postId: deleteButton.dataset.postId })
+                deletePostClick({
+                    postId: deleteButton.dataset.postId,
+                    userId: deleteButton.dataset.userId,
+                })
             })
         })
 
@@ -81,6 +85,7 @@ export function renderUserPostsPageComponent({
                 likePostClick({
                     postId: likeButton.dataset.postId,
                     isLiked: likeButton.dataset.isLiked,
+                    userId: likeButton.dataset.userId,
                 })
             })
         })
