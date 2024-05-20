@@ -168,7 +168,7 @@ const renderApp = () => {
 
             likePostClick({ postId, isLiked }) {
                 getLikePost({ token: getToken(), postId, isLiked })
-                    .then(() => getPosts({ token: getToken() }))
+                    ?.then(() => getPosts({ token: getToken() }))
                     .then(newPosts => {
                         updatePosts(newPosts)
                         renderApp()
@@ -201,7 +201,7 @@ const renderApp = () => {
 
             likePostClick({ postId, isLiked, userId }) {
                 getLikePost({ token: getToken(), postId, isLiked })
-                    .then(() =>
+                    ?.then(() =>
                         getUserPosts({
                             token: getToken(),
                             userId: userId,
