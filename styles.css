@@ -56,7 +56,7 @@
 }
 
 .posts-user-header {
-    flex-direction: column !important;
+    justify-content: center;
 }
 
 .post-header__user-image {

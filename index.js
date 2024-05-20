@@ -144,8 +144,7 @@ const renderApp = () => {
                         updatePosts(newPosts)
                         renderApp()
                     })
-
-                goToPage(POSTS_PAGE)
+                    .then(() => goToPage(POSTS_PAGE))
             },
         })
     }

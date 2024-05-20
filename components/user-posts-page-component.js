@@ -37,7 +37,10 @@ export function renderUserPostsPageComponent({
                 src="${post.user.imageUrl}"
                 class="posts-user-header__user-image"
             />
+            <div>
             <p class="posts-user-header__user-name">${post.user.name}</p>
+            <p class="posts-user-header__user-posts-length">Посты: <strong>${posts.length}</strong></p>
+            </div>
         </div>
         <li class="post">
             <div class="post-image-container">
