@@ -1,10 +1,9 @@
-import { USER_POSTS_PAGE } from '../routes.js'
 import { renderHeaderComponent } from './header-component.js'
-import { goToPage, user } from '../index.js'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { user } from '../index.js'
 
-export function renderPostsPageComponent({
+export function renderUserPostsPageComponent({
     appEl,
     posts,
     deletePostClick,
@@ -14,7 +13,7 @@ export function renderPostsPageComponent({
         const appHtml = `
     <div class="page-container">
     <div class="header-container"></div>
-    <ul class="posts">
+    <ul class="user-posts">
         ${posts
             .map(post => {
                 const toggleLikeActiveImg = post.isLiked
@@ -33,28 +32,32 @@ export function renderPostsPageComponent({
                 )
 
                 return `
-        <li class="post">
-            <div class="post-header" data-user-id="${post.user.id}">
-                <img
-                    src="${post.user.imageUrl}"
-                    class="post-header__user-image"
-                />
-                <p class="post-header__user-name">${post.user.name}</p>
+        <div class="posts-user-header" data-user-id="${post.user.id}">
+            <img
+                src="${post.user.imageUrl}"
+                class="posts-user-header__user-image"
+            />
+            <div>
+            <p class="posts-user-header__user-name">${post.user.name}</p>
+            <p class="posts-user-header__user-posts-length">Посты: <strong>${posts.length}</strong></p>
             </div>
+        </div>
+        <li class="post">
             <div class="post-image-container">
                 <img class="post-image" src="${post.imageUrl}" />
             </div>
             <div class="post-likes">
-                <button class="${user?._id === post.user.id ? `delete-button` : `-hide-del-btn`}" data-post-id="${post.id}"></button>
-                <button class="like-button" data-is-liked="${post.isLiked}" data-post-id="${post.id}">
-                    <img src="./assets/images/${toggleLikeActiveImg}" />
-                </button>
+            <button class="${user?._id === post.user.id ? `delete-button` : `-hide-del-btn`}" data-post-id="${post.id}" data-user-id="${post.user.id}"></button>
+            <button class="like-button" data-is-liked="${post.isLiked}" data-post-id="${post.id}" data-user-id="${post.user.id}">
+                <img src="./assets/images/${toggleLikeActiveImg}" />
+            </button>
                 <p class="post-likes-text">
                 Нравится: ${post.likes.length > 1 ? andMorePostLikeText : togglePostLikeText}
                 </p>
             </div>
             <p class="post-text">
-                <span class="user-name">${post.user.name}</span> ${post.description}
+                <span class="user-name">${post.user.name}</span>
+                ${post.description}
             </p>
             <p class="post-date">${postCreateFormatDate}</p>
         </li>`
@@ -69,18 +72,13 @@ export function renderPostsPageComponent({
             element: document.querySelector('.header-container'),
         })
 
-        for (let userEl of document.querySelectorAll('.post-header')) {
-            userEl.addEventListener('click', () => {
-                goToPage(USER_POSTS_PAGE, {
-                    userId: userEl.dataset.userId,
-                })
-            })
-        }
-
         //Удалить пост
         document.querySelectorAll('.delete-button').forEach(deleteButton => {
             deleteButton.addEventListener('click', () => {
-                deletePostClick({ postId: deleteButton.dataset.postId })
+                deletePostClick({
+                    postId: deleteButton.dataset.postId,
+                    userId: deleteButton.dataset.userId,
+                })
             })
         })
 
@@ -90,6 +88,7 @@ export function renderPostsPageComponent({
                 likePostClick({
                     postId: likeButton.dataset.postId,
                     isLiked: likeButton.dataset.isLiked,
+                    userId: likeButton.dataset.userId,
                 })
             })
         })
